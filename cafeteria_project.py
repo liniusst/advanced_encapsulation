@@ -1,50 +1,92 @@
-import random
+# reservation:
+# check if table reserved ( ask for name)
+# if not assign a table ( let choose from single, double or family tables )
+# implement a function that shows how many free tables and reserved tables there are( tell size of free tables)
+# make a function that shows Name/Surname/Time Reserved after reserved table id is given if user want to see# ordering:
+# make a function that lets customer choose anything he wishes from menus
+# Give customer options to change the order before payment( delete, add,update amount )
+# after ordering is finished show full cost of the order and approx waiting time# add an option to add tips(% from full cost)
+# payment:
+# implement payment
+# Log the receipt using loggin
 
-reservations_db = ['Linas Stonkus']
-visitors = {
-    'full_name': None,
-    'seats': None
-}
+from typing import List
 
-tables = {'seats': {
-
-}
-}
-
-class PersonsData:
-    def __init__(self) -> None:
-        self.visitor_name = None
-        self.reservation_status = None
-
+class Main:
     def greetings(self):
-        print("Hello Sir! What is your full name?")
-        self.visitor_name = input("Enter your full name: ")
+        print("Hello, nice to see you here.")
+    
+    def get_visitor_name(self):
+        self.visitor_name = input("Whats your name: ")
         return self.visitor_name
+    
+    def get_reservations(self, reservations: List[str]):
+        self.reservations = reservations
+        return self.reservations
+    
+    def get_seats(self):
+        self.seats = input("Enter seats: ")
+        return self.seats
+    
+class Tables(Main):
+    def __init__(self, table_type: str, table_id: int, table_seats: int, reserved_by: str, reserved_time: str) -> None:
+        self.table_type = table_type
+        self.table_id = table_id
+        self.table_seats = table_seats
+        self.reserved_by = reserved_by
+        self.reserved_time = reserved_time
 
-    def get_assign_status(self):
-        if self.visitor_name in reservations_db:
-            print(f"Hi, {self.visitor_name}, thank you for reservation before.")
-            self.reservation_status = True
-        else:
-            print(f"Nice to see you here {self.visitor_name}")
-            visitors['full_name'] = self.visitor_name
-            self.reservation_status = False
-        return self.reservation_status
+class Reservation(Tables):
+    def __init__(self) -> None:
+        self._reservation_status = None
+        self._tables = [
+            Tables("Single", 1, 2, 'Linas Stonkus', '19:20'),
+            Tables("Single", 2, 2, None),
+            Tables("Double", 3, 4, 'Toma', '20:00'),
+            Tables("Double", 4, 4, None),
+            Tables("Family", 5, 6, None),
+            Tables("Family", 6, 6, None)
+        ]
+        self._reservations = []
 
-    def tables_status(self):
-        table_number =  random.randint(1,10)
-        if self.reservation_status:
-            print(f"Your reservated table number is: {table_number}")
+    def get_reservation_status(self):
+        if self.visitor_name in self.reservations:
+            self._reservation_status = True
         else:
-            print("How many sits you need?")
-            visitors['seats'] = input("Seats: ")
-            
-    def check_table_status(self):
+            self._reservation_status = False
+        return self._reservation_status
+    
+    def assign_table(self):
+        if self.get_reservation_status() == False:
+            self.reserved_by = self.visitor_name
+            self.table_seats = self.get_seats()
+            self._reservations.append(self.visitor_name)
+            print(self._reservations)
+        else:
+            print('turi rezerva')
+
+    def get_free_tables(self):
         pass
-            
 
-visit = PersonsData()
+    def get_table_status(self):
+        if self.reserved_by != None:
+            return f"Table {self.table_id} [{self.table_type} - {self.table_seats} ppl] - reserved by {self.reserved_by}"
+        else:
+            return f"Table {self.table_id} [{self.table_type} - {self.table_seats} ppl] - free"
+
+
+reservation_db = ['Linas', 'Toma']
+
+
+visit = Reservation()
 visit.greetings()
-visit.get_assign_status()
-visit.tables_status()
-print(visitors)
+visit.get_visitor_name()
+visit.get_reservations(reservation_db)
+visit.assign_table()
+visit.get_free_tables()
+
+
+# visit.status()
+# visit.get_table_status()
+
+
